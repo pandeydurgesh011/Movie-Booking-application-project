@@ -8,6 +8,9 @@ class Header extends React.Component {
                     <header className="header">
                         <img className="header-logo" src={logo}  alt="Movies App Logo" />
                     </header>
+                    <div className="upcoming-header">
+                        <span className="heading">Upcoming Movies</span>
+                    </div>
                 </div>
             
   }

@@ -12,3 +12,15 @@
 @keyframes app-logo-spin {
     from { transform: scaleX(-1); }
 }
+
+.upcoming-header{
+    background-color: #ff9999;
+    text-align: center;
+    padding: 8px;
+    font-size: 1rem;
+}
+
+.heading{
+    padding: 8px;
+    
+}
