@@ -1,25 +1,27 @@
-
-.movie-poster {
-    height: 100%;
-    width: auto;
-}
-
-.flex-container {
+  
+.upcoming-movies-header {
+    background-color: #ff9999;
+    padding: 8px;
+    text-align: center;
+    font-size: 1rem;
+  }
+  
+  .flex-container {
     display: flex;
-}
-
-.flex-container>div {
+  }
+  
+  .left,
+  .right {
     margin: 16px;
-}
-
-.left {
-    width: 24%;
-}
-
-.right {
-    padding-top: 20px;
-    width: 76%;
-}
+  }
+  
+  .left {
+    flex-basis: 76%;
+  }
+  
+  .right {
+    flex-basis: 24%;
+  }
 
 .released-movie-grid-item {
     margin: 15px;

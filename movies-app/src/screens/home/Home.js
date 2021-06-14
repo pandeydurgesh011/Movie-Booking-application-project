@@ -1,195 +1,142 @@
-import React, { Component } from 'react';
-import './Home.css';
-import Header from "../../common/header/Header.js";
-import tileData from "../../common/moviesData.js";
-import GridList from '@material-ui/core/GridList';
-import GridListTile from '@material-ui/core/GridListTile';
-import GridListTileBar from '@material-ui/core/GridListTileBar';
-import Card from '@material-ui/core/Card';
-import CardContent from '@material-ui/core/CardContent';
-import FormControl from '@material-ui/core/FormControl';
-import Typography from '@material-ui/core/Typography';
-import InputLabel from '@material-ui/core/InputLabel';
-import Input from '@material-ui/core/Input';
-import Select from '@material-ui/core/Select';
-import TextField from '@material-ui/core/TextField';
-import Button from '@material-ui/core/Button';
-
-import { makeStyles } from '@material-ui/core/styles';
-
-const useStyles = makeStyles((theme) => ({
-    root: {
-      display: 'flex',
-      flexWrap: 'wrap',
-      flexGrow:1,
-      justifyContent: 'space-around',
-      overflow: 'hidden',
-      backgroundColor: theme.palette.background.paper,
-    },
-    gridList: {
-      flexWrap: 'nowrap',
-      height: 210,
-      width: '100%',
-      // Promote the list into his own layer on Chrome. This cost memory but helps keeping high FPS.
-      transform: 'translateZ(0)',
-    },
-    
-    titleBar: {
-      background: 'rgba(128,128,128,0.7)'
-        
-    },
-  }));
-
-  const useStyles1 = makeStyles((theme) => ({
-    root1: {
-      display: 'flex',
-      flexWrap: 'wrap',
-      justifyContent: 'space-around',
-      overflow: 'hidden',
-      backgroundColor: theme.palette.background.paper,
-    },
-    gridList1: {
-      transform: 'translateZ(0)',
-      cursor: 'pointer'
-    },
-    icon: {
-      color: 'rgba(255, 255, 255, 0.54)',
-    },
-
-    formControl: {
-      margin: theme.spacing.unit,
-      minWidth: 240,
-      maxWidth: 240
-  },
-
-  title: {
-    color: theme.palette.primary.light,
-}
-  }));
-
-function SingleLineGridList() {
-  const classes = useStyles();
-
-  return (
-    <div className={classes.root}>
-      <GridList className={classes.gridList} cols={6}>
-        {tileData.map((tile) => (
-          <GridListTile key={tile.id}>
-            <img src={tile.poster_url} alt={tile.title} />
-            <GridListTileBar
-              title={tile.title}
-              classes={{
-                root: classes.titleBar,
-                title: classes.title,
-              }}
-            />
-          </GridListTile>
-        ))}
-      </GridList>       
-    </div>
-  );
-}
-
-function TitlebarGridList() {
-    const classes1 = useStyles1();
-  
-    return (
-      <div className="flex-container">
-          <div className="right">
-            <div className={classes1.root1}>
-              <GridList cellHeight={350} cols={4} className={classes1.gridList1}>
-            {tileData.map((tile) => (
-              <GridListTile className="released-movie-grid-item" key={"grid" + tile.id}>
-              
-                  <img src={tile.poster_url} className="movie-poster" alt={tile.title} />
-                    <GridListTileBar
-                        title={tile.title}
-                        subtitle={<span>Release Date: {new Date(tile.release_date).toDateString()}</span>}
-                  />
-                </GridListTile>
-              ))}
-          
-        </GridList>
-      </div>
-      </div>
-
-      <div className="left">
-        <Card>
-          <CardContent>
-            <FormControl className={classes1.formControl}>
-              <Typography className={classes1.title} color="textSecondary">
-                FIND MOVIES BY:
-              </Typography>
-            </FormControl>
-
-            <FormControl className={classes1.formControl}>
-              <InputLabel>Movie Name</InputLabel>
-              <Input id="movieName"/>
-            </FormControl>
-
-            <FormControl className={classes1.formControl}>
-              <InputLabel>Genres</InputLabel>
-                <Select
-                  multiple
-                >
-                </Select>
-            </FormControl>
-
-            <FormControl className={classes1.formControl}>
-              <InputLabel>Artists</InputLabel>
-                <Select
-                  multiple                        
-                >
-                </Select>
-            </FormControl>
-
-            <FormControl className={classes1.formControl}>
-              <TextField
-                id="releaseDateStart"
-                label="Release Date Start"
-                type="date"
-                defaultValue=""
-                InputLabelProps={{ shrink: true }}
-                                  
-              />
-            </FormControl>
-
-            <FormControl className={classes1.formControl}>
-              <TextField
-                id="releaseDateEnd"
-                label="Release Date End"
-                type="date"
-                defaultValue=""
-                InputLabelProps={{ shrink: true }}    
-              />
-            </FormControl>
-
-            <br />
-            <br />
-            <FormControl className={classes1.formControl}>
-              <Button variant="contained" color="primary">
-                APPLY
-              </Button>
-            </FormControl>
-
-          </CardContent>
-        </Card>
-      </div>
-    </div>
-    )
-}   
-
-class Home extends Component {
-
-    render() {
-        return (
-            <div>
-                <Header />
-                <SingleLineGridList />  
-                <TitlebarGridList />    
-            </div>
-        )
+import React from "react";
+import "./Home.css";
+import Header from "./../../common/header/Header";
+import moviesData from "./../../common/moviesData";
+import UpComingMovies from "./HomeComponents/UpcomingMovies";
+import AllMovies from "./HomeComponents/AllMovies";
+import MoviesFilterForm from "./HomeComponents/MoviesFilterForm";
+import genres from "./../../common/genre";
+import artists from "./../../common/artists";
+class Home extends React.Component {
+  constructor() {
+    super();
+    this.state = {
+      movies: moviesData,
+      formValues: {
+        movieName: "",
+        genresList: [],
+        artistsList: [],
+        releaseDateStart: null,
+        releaseDateEnd: null,
+      },
+    };
+  }
+  filterList = () => {
+    let finalFilteredMovieList = moviesData;
+    const formValues = { ...this.state.formValues };
+    if (formValues.movieName) {
+      finalFilteredMovieList = finalFilteredMovieList.filter(
+        movie =>
+          movie.title.toLowerCase() ===
+          this.state.formValues.movieName.toLowerCase()
+      );
     }
-    
+    if (formValues.genresList.length > 0) {
+      finalFilteredMovieList = finalFilteredMovieList.filter(movie => {
+        for (let i = 0; i < formValues.genresList.length; i++) {
+          console.log(movie.genres, formValues.genresList);
+          if (movie.genres.includes(formValues.genresList[i].name)) return true;
+        }
+        return false;
+      });
+    }
+    if (formValues.artistsList.length > 0) {
+      finalFilteredMovieList = finalFilteredMovieList.filter(movie => {
+        const fullNameArray = [];
+        movie.artists.forEach(artist =>
+          fullNameArray.push(`${artist.first_name} ${artist.last_name}`)
+        );
+        for (let i = 0; i < formValues.artistsList.length; i++) {
+          if (
+            fullNameArray.includes(
+              `${formValues.artistsList[i].first_name} ${formValues.artistsList[i].last_name}`
+            )
+          )
+            return true;
+        }
+        return false;
+      });
+    }
+    if (formValues.releaseDateStart && formValues.releaseDateEnd) {
+      const releaseDateStart = new Date(formValues.releaseDateStart);
+      const releaseDateEnd = new Date(formValues.releaseDateEnd);
+      finalFilteredMovieList = finalFilteredMovieList.filter(movie => {
+        const movieReleaseDate = new Date(movie.release_date);
+        return (
+          movieReleaseDate >= releaseDateStart &&
+          movieReleaseDate <= releaseDateEnd
+        );
+      });
+    } else if (formValues.releaseDateStart && !formValues.releaseDateEnd) {
+      const releaseDateStart = new Date(formValues.releaseDateStart);
+      finalFilteredMovieList = finalFilteredMovieList.filter(movie => {
+        const movieReleaseDate = new Date(movie.release_date);
+        return movieReleaseDate >= releaseDateStart;
+      });
+    } else if (!formValues.releaseDateStart && formValues.releaseDateEnd) {
+      const releaseDateEnd = new Date(formValues.releaseDateEnd);
+      finalFilteredMovieList = finalFilteredMovieList.filter(movie => {
+        const movieReleaseDate = new Date(movie.release_date);
+        return movieReleaseDate <= releaseDateEnd;
+      });
+    }
+    console.log(formValues.releaseDateStart, formValues.releaseDateEnd);
+    console.log(finalFilteredMovieList);
+    this.setState({ movies: finalFilteredMovieList });
+  };
+
+  handleSubmit = e => {
+    e.preventDefault();
+    this.filterList();
+    console.log("Submitted");
+  };
+
+  handleChange = e => {
+    const formValues = { ...this.state.formValues };
+    formValues[e.target.name] = e.target.value;
+    this.setState({ formValues });
+  };
+
+  handleAutoCompleteChange = (e, v) => {
+    const formValues = { ...this.state.formValues };
+    formValues[`${e.target.id.split("-")[0]}List`] = v;
+    this.setState({ formValues });
+  };
+
+  handleDateChange = (d, v, name) => {
+    const formValues = { ...this.state.formValues };
+    formValues[name] = new Date(d).toDateString();
+    this.setState({ formValues });
+  };
+
+  render() {
+    return (
+      <div>
+        <Header />
+        <div className="upcoming-movies-header">
+        <span>Upcoming Movies</span>
+        </div>
+        <UpComingMovies movies={moviesData} />
+        <div className="flex-container">
+          <div className="left">
+            <AllMovies movies={this.state.movies} />
+          </div>
+          <div className="right">
+            <MoviesFilterForm
+              genres={genres}
+              artists={artists}
+              handleSubmit={this.handleSubmit}
+              handleChange={this.handleChange}
+              handleAutoCompleteChange={this.handleAutoCompleteChange}
+              handleDateChange={this.handleDateChange}
+              releaseDateStart={this.state.formValues.releaseDateStart}
+              releaseDateEnd={this.state.formValues.releaseDateEnd}
+            />
+          </div>
+        </div>
+      </div>
+    );
+  }
 }
-export default Home
+
+export default Home;
