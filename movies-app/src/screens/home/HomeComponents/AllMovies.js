@@ -3,6 +3,7 @@ import GridList from "@material-ui/core/GridList";
 import GridListTileBar from "@material-ui/core/GridListTileBar";
 import GridListTile from "@material-ui/core/GridListTile";
 import { makeStyles } from "@material-ui/core/styles";
+import { Link } from "react-router-dom";
 
 const useStyles = makeStyles({
   link: {
@@ -15,7 +16,11 @@ export default function AllMovies({ movies }) {
     <div>
       <GridList cols={4} cellHeight={350}>
         {movies.map(movie => (
-          <GridListTile key={movie.id} className={classes.link}>
+          <GridListTile
+          component={Link}
+          to={`/details/${movie.id}`}
+          key={movie.id}
+          className={classes.link}>
             <img src={movie.poster_url} alt={movie.title} />
             <GridListTileBar
               title={movie.title}
